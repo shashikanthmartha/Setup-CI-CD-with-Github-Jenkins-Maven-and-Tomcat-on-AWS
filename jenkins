@@ -1,10 +1,19 @@
 pipeline {
     agent any
+    environment {
+        GIT_URL = 'your_git_repository_url'
+        SONARQUBE_SERVER = ''
     tools {
         maven "MAVEN"
         jdk "JDK"
     }
     stages {
+        stage('Checkout') {
+            steps {
+                checkout([$class: 'GitSCM', branches: [[name: '*/main']], userRemoteConfigs: [[url: GIT_URL]]])
+            }
+        }
+        echo 'checkout'
         stage('Initialize'){
             steps{
                 echo "PATH = ${M2_HOME}/bin:${PATH}"
@@ -13,24 +22,31 @@ pipeline {
         }
         stage('Build') {
             steps {
+                sh 'mvn clean install'
+            }
+        }
+        echo 'build sccess'
+       /* stage('Build') {
+            steps {
                 dir("/var/lib/jenkins/workspace/demopipelinetask/my-app") {
                 sh 'mvn -B -DskipTests clean package'
                 }
             }
-        }
-	      stage('Static Code Analysis') {
+        } */
+	stage('Static Code Analysis') {
             steps {
                 withSonarQubeEnv('SonarQube') {
                     sh 'mvn sonar:sonar'
                 }
             }
-        }
-
+        }  
+         echo 'sonarqube success'
         stage('Deploy to Tomcat') {
             steps {
                 sh 'cp target/your-web-app.war $CATALINA_HOME/webapps/'
             }
-     }
+        }
+    echo 'deployed to tomcat'
     post {
        always {
           junit(
