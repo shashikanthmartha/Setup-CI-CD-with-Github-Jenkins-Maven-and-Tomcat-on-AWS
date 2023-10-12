@@ -1,8 +1,8 @@
 pipeline {
     agent any
     environment {
-        GIT_URL = 'your_git_repository_url'
-        SONARQUBE_SERVER = ''
+        GIT_URL = 'https://github.com/shashikanthmartha/Setup-CI-CD-with-Github-Jenkins-Maven-and-Tomcat-on-AWS.git'
+        SONARQUBE_SERVER = 'http://localhost:9090'
     tools {
         maven "MAVEN"
         jdk "JDK"
@@ -10,7 +10,7 @@ pipeline {
     stages {
         stage('Checkout') {
             steps {
-                checkout([$class: 'GitSCM', branches: [[name: '*/main']], userRemoteConfigs: [[url: GIT_URL]]])
+                checkout([$class: 'GitSCM', branches: [[name: '*/master']], userRemoteConfigs: [[url: GIT_URL]]])
             }
         }
         echo 'checkout'
