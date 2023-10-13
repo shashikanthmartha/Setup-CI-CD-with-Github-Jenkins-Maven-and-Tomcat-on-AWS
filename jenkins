@@ -1,58 +1,28 @@
-pipeline {
+pipeline{
     agent any
-    environment {
-        GIT_URL = 'https://github.com/shashikanthmartha/Setup-CI-CD-with-Github-Jenkins-Maven-and-Tomcat-on-AWS.git'
-        SONARQUBE_SERVER = 'http://localhost:9090'
-    tools {
-        maven "MAVEN"
-        jdk "JDK"
+    tools{
+        maven 'Maven'
     }
-    stages {
-        stage('Checkout') {
-            steps {
-                checkout([$class: 'GitSCM', branches: [[name: '*/master']], userRemoteConfigs: [[url: GIT_URL]]])
-            }
-        }
-        echo 'checkout'
-        stage('Initialize'){
+    stages{
+        stage ('Build'){
             steps{
-                echo "PATH = ${M2_HOME}/bin:${PATH}"
-                echo "M2_HOME = /opt/maven"
+                sh 'mvn clean package'
             }
-        }
-        stage('Build') {
-            steps {
-                sh 'mvn clean install'
-            }
-        }
-        echo 'build sccess'
-       /* stage('Build') {
-            steps {
-                dir("/var/lib/jenkins/workspace/demopipelinetask/my-app") {
-                sh 'mvn -B -DskipTests clean package'
+            post{
+                success{
+                    echo "Archiving the Artifacts"
+                    archiveArtifacts artifacts: '**/target/*.war'
                 }
             }
-        } */
-	stage('Static Code Analysis') {
-            steps {
-                withSonarQubeEnv('SonarQube') {
-                    sh 'mvn sonar:sonar'
+        }
+        stage ('Deploy to tomcat server') {
+            steps{
+                script{
+                    readProp = readProperties file: 'build.properties'
                 }
-            }
-        }  
-         echo 'sonarqube success'
-        stage('Deploy to Tomcat') {
-            steps {
-                sh 'cp target/your-web-app.war $CATALINA_HOME/webapps/'
+                echo "This is running on ${readProp['deploy.type']}"
+                deploy adapters: [tomcat9(credentialsId: '3e5e5fb9-73e4-4243-840a-b0ceaa706c00', path: '', url: 'http://65.1.95.121:9090/')], contextPath: null, war: '**/*.war'
             }
         }
-    echo 'deployed to tomcat'
-    post {
-       always {
-          junit(
-        allowEmptyResults: true,
-        testResults: '*/test-reports/.xml'
-      )
-      }
-   } 
+    }
 }
