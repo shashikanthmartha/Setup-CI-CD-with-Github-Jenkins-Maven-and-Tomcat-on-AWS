@@ -1,7 +1,7 @@
 node {
   def GIT_URL = 'https://github.com/shashikanthmartha/Setup-CI-CD-with-Github-Jenkins-Maven-and-Tomcat-on-AWS.git'
   
-  try {
+  
     stage('Checkout') {
       echo " $GIT_URL  git url"
       checkout([$class: 'GitSCM', branches: [
@@ -48,12 +48,5 @@ node {
 
     echo "deployed to tomcat"
     
-  } catch (Exception e) {
-    echo 'Exception e'
-    currentBuild.result = 'FAILURE'
-
-    throw e
-  }
-
+  
 }
-
