@@ -31,7 +31,6 @@ node {
 
           deploy adapters: [tomcat9(credentialsId: '8fb82e3b-3b73-400b-8a75-dfaa86afa0b0', path: '', url: 'http://localhost:8081')], contextPath: 'maven1', war: '**/*.war'
      
-      echo 'tomcat credentials success '
      
       echo "deploy to tomcat"
   } catch (Exception e) {
