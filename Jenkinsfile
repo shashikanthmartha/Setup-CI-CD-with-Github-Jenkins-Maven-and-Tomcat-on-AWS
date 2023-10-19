@@ -34,5 +34,18 @@ node {
     }
 
     echo "deployed to tomcat"
+
+
+  /*
+      stage('Quality Gate') {
+        timeout(time: 1, unit: 'HOURS') {
+            echo 'status success'
+            def qg = waitForQualityGate()
+            if (qg.status == 'OK') {
+                echo 'status success'
+                error "Pipeline aborted due to quality gate failure: ${qg.status}"
+            }
+        }
+    }*/
     
 }
