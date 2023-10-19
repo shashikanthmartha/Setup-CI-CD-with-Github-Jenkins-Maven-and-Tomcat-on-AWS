@@ -35,5 +35,4 @@ node {
 
     echo "deployed to tomcat"
     
-  
 }
