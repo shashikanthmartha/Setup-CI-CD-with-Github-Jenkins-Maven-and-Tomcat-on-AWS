@@ -31,7 +31,7 @@
     <p>Already have an account? <a href="#">Sign in</a>.</p>
   </div>
 
-   <h1> "CI CD using jenkins " poc work</h1>
+   <h1> "CI CD using jenkins " Poc work</h1>
 
   
 </form>
